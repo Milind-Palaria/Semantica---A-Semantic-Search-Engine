@@ -2,7 +2,7 @@ import streamlit as st
 from elasticsearch import Elasticsearch
 from sentence_transformers import SentenceTransformer
 import pandas as pd
-from report_generator import generate_csv
+from report_generator import generate_csv, generate_excel
 
 indexName = "user_uploaded_data"
 try:
@@ -41,8 +41,8 @@ if uploaded_file is not None:
 
     if st.button("Process and Index Dataset"):
         st.write("Starting to process the dataset...")
-
         model = SentenceTransformer(selected_model)
+
         df['DescriptionVector'] = df[text_column].apply(
             lambda x: model.encode(str(x), clean_up_tokenization_spaces=False) if isinstance(x, str) else model.encode("", clean_up_tokenization_spaces=False)
         )
@@ -88,6 +88,13 @@ if st.button("Search"):
             data=csv_data,
             file_name='search_results.csv',
             mime='text/csv',
+        )
+        excel_data = generate_excel(search_results)
+        st.download_button(
+            label="Download Search Results as Excel",
+            data=excel_data,
+            file_name='search_results.xlsx',
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         )
 
     except Exception as e:

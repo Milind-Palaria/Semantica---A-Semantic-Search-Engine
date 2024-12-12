@@ -2,3 +2,4 @@ streamlit
 elasticsearch
 sentence-transformers
 pandas
+xlsxwriter

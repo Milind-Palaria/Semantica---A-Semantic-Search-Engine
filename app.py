@@ -6,8 +6,6 @@ from report_generator import generate_csv, generate_excel, generate_pdf
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-
 with open("custom.css") as css_file:
     st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
 
@@ -15,9 +13,15 @@ st.markdown("<h1>Sementica - A Semantic Search Engine</h1>", unsafe_allow_html=T
 
 indexName = "user_uploaded_data"
 
-ES_ENDPOINT = os.getenv("ES_ENDPOINT")
-ES_USERNAME = os.getenv("ES_USERNAME")
-ES_PASSWORD = os.getenv("ES_PASSWORD")
+if os.getenv("STREAMLIT_ENV") != "cloud":
+    load_dotenv()  
+    ES_ENDPOINT = os.getenv("ES_ENDPOINT")
+    ES_USERNAME = os.getenv("ES_USERNAME")
+    ES_PASSWORD = os.getenv("ES_PASSWORD")
+else:
+    ES_ENDPOINT = st.secrets["ES_ENDPOINT"]
+    ES_USERNAME = st.secrets["ES_USERNAME"]
+    ES_PASSWORD = st.secrets["ES_PASSWORD"]
 
 try:
     es = Elasticsearch(
@@ -36,6 +40,7 @@ except ConnectionError as e:
 #     )
 # except ConnectionError as e:
 #     st.error(f"Connection Error: {e}")
+
 if es.ping():
     st.success("Successfully connected to Elasticsearch!", icon="✅")
 else:

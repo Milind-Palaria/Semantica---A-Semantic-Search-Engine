@@ -3,92 +3,39 @@ from elasticsearch import Elasticsearch
 from sentence_transformers import SentenceTransformer
 import pandas as pd
 from report_generator import generate_csv, generate_excel, generate_pdf
+import os
+from dotenv import load_dotenv
 
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-color: #1e1e1e;
-        font-family: 'Roboto', sans-serif;
-        color: #f5f5f5;
-    }
-    h1, h2, h3 {
-        font-family: 'Poppins', sans-serif;
-        color: #f5f5f5;
-        text-align: center;
-        font-weight: 600;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    .card {
-        background-color: #2a2a2a;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
-    .stButton > button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 10px;
-        padding: 10px 20px;
-        font-size: 16px;
-        border: none;
-        transition: background-color 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .stButton > button:hover {
-        background-color: #0056b3;
-    }
-    .stTextInput input {
-        background-color: #333;
-        border: 1px solid #444;
-        border-radius: 10px;
-        padding: 15px;
-        font-size: 16px;
-        color: white;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .stFileUploader {
-        background-color: #333;
-        border-radius: 10px;
-        padding: 20px;
-        border: 1px solid #444;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-    .search-result {
-        background-color: #2a2a2a;
-        border: 1px solid #444;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-    .css-1y0tads {
-        border-top: 1px solid #444;
-        margin: 20px 0;
-    }
-    .block-container {
-        padding: 30px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+load_dotenv()
+
+with open("custom.css") as css_file:
+    st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
 
 st.markdown("<h1>Sementica - A Semantic Search Engine</h1>", unsafe_allow_html=True)
 
 indexName = "user_uploaded_data"
+
+ES_ENDPOINT = os.getenv("ES_ENDPOINT")
+ES_USERNAME = os.getenv("ES_USERNAME")
+ES_PASSWORD = os.getenv("ES_PASSWORD")
+
 try:
     es = Elasticsearch(
-        "https://localhost:9200",
-        basic_auth=("elastic", "12345678"),
-        verify_certs=False,
+        ES_ENDPOINT,
+        basic_auth=(ES_USERNAME, ES_PASSWORD), 
+        verify_certs=True  
     )
 except ConnectionError as e:
     st.error(f"Connection Error: {e}")
 
+# try:
+#     es = Elasticsearch(
+#         "http://localhost:9200",
+#         basic_auth=("elastic", "12345678"),
+#         verify_certs=False,
+#     )
+# except ConnectionError as e:
+#     st.error(f"Connection Error: {e}")
 if es.ping():
     st.success("Successfully connected to Elasticsearch!", icon="✅")
 else:

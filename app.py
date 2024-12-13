@@ -2,7 +2,7 @@ import streamlit as st
 from elasticsearch import Elasticsearch
 from sentence_transformers import SentenceTransformer
 import pandas as pd
-from report_generator import generate_csv, generate_excel
+from report_generator import generate_csv, generate_excel, generate_pdf
 
 st.markdown(
     """
@@ -170,6 +170,13 @@ if st.button("Search"):
             data=excel_data,
             file_name='search_results.xlsx',
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        pdf_data = generate_pdf(search_results, search_results.columns.tolist())
+        st.download_button(
+            label="Download Search Results as PDF",
+            data=pdf_data,
+            file_name='search_results.pdf',
+            mime='application/pdf',
         )
     except Exception as e:
         st.error(f"Search failed: {e}")

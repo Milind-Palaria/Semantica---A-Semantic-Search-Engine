@@ -3,3 +3,4 @@ elasticsearch
 sentence-transformers
 pandas
 xlsxwriter
+fpdf

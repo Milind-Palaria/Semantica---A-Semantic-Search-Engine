@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 with open("custom.css") as css_file:
     st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
 
-st.markdown("<h1>Sementica - A Semantic Search Engine</h1>", unsafe_allow_html=True)
+st.markdown("<h1>Semantica - A Semantic Search Engine</h1>", unsafe_allow_html=True)
 
 indexName = "user_uploaded_data"
 

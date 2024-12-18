@@ -1,3 +1,4 @@
 sementicaVENV/
 __pycache__/
 .env
+elastic-cloud-credentials.csv
